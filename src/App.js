@@ -1,216 +1,83 @@
-import { useState } from "react";
 import * as XLSX from "xlsx";
 import { saveAs } from 'file-saver';
 
 import './App.css';
 
 function App() {
-  const [parsedDataString, setParsedDataString] = useState("");
 
-  const resultSet = [
-    {
-        "Date": {
-            "id": "[Date].[YM].[Date.YEAR].[2024]",
-            "description": "2024",
-            "parentId": "[Date].[YM].[All].[(all)]",
-            "properties": {}
-        },
-        "Version": {
-            "id": "public.Actual",
-            "description": "Actual",
-            "properties": {}
-        },
-        "@MeasureDimension": {
-            "id": "Revenue",
-            "description": "Revenue",
-            "rawValue": "1000",
-            "formattedValue": "1,000.00"
-        },
-        "Company_Code": {
-            "id": "SG01",
-            "description": "Singapore 1",
-            "properties": {}
-        },
-        "Rule": {
-            "id": "N",
-            "description": "No",
-            "properties": {}
-        }
-    },
-    {
-        "Date": {
-            "id": "[Date].[YM].&[202401]",
-            "description": "Jan (2024)",
-            "parentId": "[Date].[YM].[Date.YEAR].[2024]",
-            "properties": {}
-        },
-        "Version": {
-            "id": "public.Actual",
-            "description": "Actual",
-            "properties": {}
-        },
-        "@MeasureDimension": {
-            "id": "Revenue",
-            "description": "Revenue",
-            "rawValue": "1000",
-            "formattedValue": "1,000.00"
-        },
-        "Company_Code": {
-            "id": "SG01",
-            "description": "Singapore 1",
-            "properties": {}
-        },
-        "Rule": {
-            "id": "N",
-            "description": "No",
-            "properties": {}
-        }
-    },
-    {
-        "Date": {
-            "id": "[Date].[YM].[Date.YEAR].[2024]",
-            "description": "2024",
-            "parentId": "[Date].[YM].[All].[(all)]",
-            "properties": {}
-        },
-        "Version": {
-            "id": "public.Actual",
-            "description": "Actual",
-            "properties": {}
-        },
-        "@MeasureDimension": {
-            "id": "Revenue",
-            "description": "Revenue",
-            "rawValue": "4000",
-            "formattedValue": "4,000.00"
-        },
-        "Company_Code": {
-            "id": "SG01",
-            "description": "Singapore 1",
-            "properties": {}
-        },
-        "Rule": {
-            "id": "Y",
-            "description": "Yes",
-            "properties": {}
-        }
-    },
-    {
-        "Date": {
-            "id": "[Date].[YM].&[202401]",
-            "description": "Jan (2024)",
-            "parentId": "[Date].[YM].[Date.YEAR].[2024]",
-            "properties": {}
-        },
-        "Version": {
-            "id": "public.Actual",
-            "description": "Actual",
-            "properties": {}
-        },
-        "@MeasureDimension": {
-            "id": "Revenue",
-            "description": "Revenue",
-            "rawValue": "4000",
-            "formattedValue": "4,000.00"
-        },
-        "Company_Code": {
-            "id": "SG01",
-            "description": "Singapore 1",
-            "properties": {}
-        },
-        "Rule": {
-            "id": "Y",
-            "description": "Yes",
-            "properties": {}
-        }
-    }
-];
+  const dataArray = [
+    "924027,Test 001,A_240006,FY2023,FY2025,Test 001,T5111,Manpower,1000,6000",
+    "924027,Test 001,A_240006,FY2023,FY2025,Test 001,T5111,Manpower,1000,6000"
+  ];
 
-  // Function to export resultSet data to XLS format
-  const exportExcel = (resultSet) => {
-    // Transform resultSet data into pivot-style format
-    const pivotData = {};
-  
-    resultSet.forEach(item => {
-        const { Date, Version, "@MeasureDimension": measureDimension, Company_Code, Rule } = item;
-        const key = `${Company_Code.description}_${Rule.description}`;
-  
-        if (!pivotData[key]) {
-            pivotData[key] = {};
-        }
-  
-        const dateKey = `${Date.description}_${Version.description}`;
-        pivotData[key][dateKey] = parseFloat(measureDimension.rawValue); // Use parseFloat to convert string to number
+  // Function to export dataArray data to XLS format
+  const exportExcel = (dataArray) => {
+    // Convert array data into array of arrays
+    const data = dataArray.map(item => {
+      const [costCenter, costCenterDesc, fundingPot, startingFY, closingFY, fundingPorDesc, account, accountDesc, revisedCFY, estimatedNFY] = item.split(',');
+      return [costCenter, costCenterDesc, fundingPot, startingFY, closingFY, fundingPorDesc, account, accountDesc, revisedCFY, estimatedNFY];
     });
-  
-    // Convert pivot data into array of arrays
-    const data = [];
-  
-    // Get unique dates and versions
-    const dates = new Set();
-    const versions = new Set();
-  
-    for (const key in pivotData) {
-        for (const dateKey in pivotData[key]) {
-            const [date, version] = dateKey.split('_');
-            dates.add(date);
-            versions.add(version);
-        }
-    }
-  
+
     // Headers
-    const headers = ['', 'Date', 'Version', ...Array.from(versions)];
-  
-    data.push(headers);
-  
-    // Rows
-    for (const key in pivotData) {
-        const [companyCode, rule] = key.split('_');
-        const row = [companyCode, rule];
-  
-        dates.forEach(date => {
-            versions.forEach(version => {
-                const value = pivotData[key][`${date}_${version}`] || '';
-                row.push(value);
-            });
-        });
-  
-        data.push(row);
-    }
-  
+    const headers1 = ['', '', '', '', '', '', '', 'Measures', 'Revised-CFY' ,'Estimated-NFY'];
+    const headers2 = ["Cost Center","Cost Center Description","Funding Pot", "Starting FY", "Closing FY","Funding Pot Description","Accounts","Account Description","",""];
+    data.unshift(headers1, headers2);
+
     // Convert the array data to a worksheet
     const ws = XLSX.utils.aoa_to_sheet(data);
-  
+
+    // Apply cell protection to rows 1 and 2
+    const lockedRows = [1, 2];
+    const headers = data[0];
+    for (let r = 0; r < data.length; r++) {
+    for (let c = 0; c < headers.length; c++) {
+        const cell = XLSX.utils.encode_cell({ r: r, c: c });
+        if (lockedRows.includes(r)) {
+        // Apply protection for rows 1 and 2
+        if (!ws[cell]) ws[cell] = {};
+        ws[cell].s = { protection: { locked: true } };
+        } else {
+        // Set protection to unlocked for other rows
+        if (!ws[cell]) ws[cell] = {};
+        ws[cell].s = { protection: { locked: false } };
+        }
+    }
+    }
+
     // Apply cell styling
-    const yellowCellStyle = {
-      fill: {
-        fgColor: { rgb: "FFFF00" } // Yellow color code
-      }
+    const headerCellStyle = {
+      font: { bold: true },
+      alignment: { horizontal: 'center' },
+      fill: { fgColor: { rgb: "FFCC00" } } // Light orange color code
+    };
+    const cellStyle = {
+      alignment: { horizontal: 'center' }
     };
 
-    // Determine column index for Revenue
-    const revenueColumnIndex = headers.findIndex(header => header === '@MeasureDimension');
-    console.log("Revenue Column Index:", revenueColumnIndex);
+    // Apply styling to headers
+    headers.forEach((header, index) => {
+      const cell = XLSX.utils.encode_cell({ r: 0, c: index });
+      ws[cell] = { ...ws[cell], ...headerCellStyle };
+    });
 
-    // Loop through each row to check Revenue value and apply styling
-    for (let r = 2; r <= data.length; r++) {
-      const cell = XLSX.utils.encode_cell({ r: r, c: revenueColumnIndex });
-      if (ws[cell] && parseFloat(ws[cell].v) >= 1000) { // Check if Revenue is more or equal to 1000
-        console.log(parseFloat(ws[cell].v));
-        ws[cell].s = yellowCellStyle;
+    // Apply styling to cells
+    for (let r = 1; r <= data.length; r++) {
+      for (let c = 0; c < headers.length; c++) {
+        const cell = XLSX.utils.encode_cell({ r: r, c: c });
+        ws[cell] = { ...ws[cell], ...cellStyle };
       }
     }
-  
+
     // Create a new workbook and add the worksheet
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
-  
+
     // Generate XLSX file buffer
     const buffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-  
+
     // Create Blob from buffer
     const blob = new Blob([buffer], { type: 'application/octet-stream' });
-  
+
     // Trigger file download
     const fileName = "custom_data.xlsx";
     saveAs(blob, fileName);
@@ -220,8 +87,8 @@ function App() {
     <div className="App">
       <input 
         type="button"
-        value="Test"
-        onClick={() => exportExcel(resultSet)} 
+        value="Export to Excel"
+        onClick={() => exportExcel(dataArray)} 
       />
     </div>
   );
