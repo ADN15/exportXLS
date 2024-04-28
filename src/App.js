@@ -1,22 +1,16 @@
 import * as XLSX from "xlsx";
 import { saveAs } from 'file-saver';
-
 import './App.css';
 
 function App() {
-
   const dataArray = [
-    "924027,Test 001,A_240006,FY2023,FY2025,Test 001,T5111,Manpower,1000,6000",
-    "924027,Test 001,A_240006,FY2023,FY2025,Test 001,T5111,Manpower,1000,6000"
+    "924150;Test 006;W_250002;FY2025;FY2028;B-A-01 Test 002;5113;Purchase of Tangible Assets - Plants and Machinery"
   ];
 
   // Function to export dataArray data to XLS format
-  const exportExcel = (dataArray) => {
+  const exportExcel = async (dataArray) => {
     // Convert array data into array of arrays
-    const data = dataArray.map(item => {
-      const [costCenter, costCenterDesc, fundingPot, startingFY, closingFY, fundingPorDesc, account, accountDesc, revisedCFY, estimatedNFY] = item.split(',');
-      return [costCenter, costCenterDesc, fundingPot, startingFY, closingFY, fundingPorDesc, account, accountDesc, revisedCFY, estimatedNFY];
-    });
+    const data = dataArray.map(item => item.split(';'));
 
     // Headers
     const headers1 = ['', '', '', '', '', '', '', 'Measures', 'Revised-CFY' ,'Estimated-NFY'];
@@ -26,47 +20,46 @@ function App() {
     // Convert the array data to a worksheet
     const ws = XLSX.utils.aoa_to_sheet(data);
 
-    // Apply cell protection to rows 1 and 2
-    const lockedRows = [1, 2];
+    // Apply cell protection to specific columns
+    const lockedColumns = [1, 2]; // Indexes of columns to lock
     const headers = data[0];
-    for (let r = 0; r < data.length; r++) {
+    const secondRow = data[1];
     for (let c = 0; c < headers.length; c++) {
-        const cell = XLSX.utils.encode_cell({ r: r, c: c });
-        if (lockedRows.includes(r)) {
-        // Apply protection for rows 1 and 2
-        if (!ws[cell]) ws[cell] = {};
-        ws[cell].s = { protection: { locked: true } };
-        } else {
-        // Set protection to unlocked for other rows
-        if (!ws[cell]) ws[cell] = {};
-        ws[cell].s = { protection: { locked: false } };
+      if (lockedColumns.includes(c)) {
+        // Apply protection for specified columns based on values in the first and second rows
+        const shouldLock = secondRow[c] !== '' && headers[c] !== ''; // Lock if both rows have values
+        for (let r = 0; r < data.length; r++) {
+          const cell = XLSX.utils.encode_cell({ r: r, c: c });
+          if (!ws[cell]) ws[cell] = {};
+          ws[cell].s = { protection: { locked: shouldLock, lockText: true } };
         }
-    }
-    }
-
-    // Apply cell styling
-    const headerCellStyle = {
-      font: { bold: true },
-      alignment: { horizontal: 'center' },
-      fill: { fgColor: { rgb: "FFCC00" } } // Light orange color code
-    };
-    const cellStyle = {
-      alignment: { horizontal: 'center' }
-    };
-
-    // Apply styling to headers
-    headers.forEach((header, index) => {
-      const cell = XLSX.utils.encode_cell({ r: 0, c: index });
-      ws[cell] = { ...ws[cell], ...headerCellStyle };
-    });
-
-    // Apply styling to cells
-    for (let r = 1; r <= data.length; r++) {
-      for (let c = 0; c < headers.length; c++) {
-        const cell = XLSX.utils.encode_cell({ r: r, c: c });
-        ws[cell] = { ...ws[cell], ...cellStyle };
+      } else {
+        // If the column index is not in lockedColumns, unlock the column
+        for (let r = 0; r < data.length; r++) {
+          const cell = XLSX.utils.encode_cell({ r: r, c: c });
+          if (!ws[cell]) ws[cell] = {};
+          ws[cell].s = { protection: { locked: false, lockText: true } };
+        }
       }
     }
+
+    // Set sheet protection
+    ws['!protect'] = {
+        selectLockedCells: true,
+        selectUnlockedCells: true,
+        formatCells: false,
+        formatColumns: false,
+        formatRows: false,
+        insertRows: false,
+        insertColumns: false,
+        insertHyperlinks: false,
+        deleteRows: false,
+        deleteColumns: false,
+        sort: false,
+        autoFilter: false,
+        pivotTables: false,
+        password: 'password'
+    };
 
     // Create a new workbook and add the worksheet
     const wb = XLSX.utils.book_new();
