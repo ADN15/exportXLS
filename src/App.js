@@ -4,7 +4,8 @@ import './App.css';
 
 function App() {
   const dataArray = [
-    "924150;Test 006;W_250002;FY2025;FY2028;B-A-01 Test 002;5113;Purchase of Tangible Assets - Plants and Machinery"
+    "924150;Test 006;W_250002;FY2025;FY2028;B-A-01 Test 002;5113;Purchase of Tangible Assets - Plants and Machinery;;1000",
+    "924150;Test 006;W_250002;FY2025;FY2028;B-A-01 Test 002;5113;Purchase of Tangible Assets - Plants and Machinery;;1000"
   ];
 
   // Function to export dataArray data to XLS format
@@ -39,6 +40,21 @@ function App() {
           const cell = XLSX.utils.encode_cell({ r: r, c: c });
           if (!ws[cell]) ws[cell] = {};
           ws[cell].s = { protection: { locked: false, lockText: true } };
+        }
+      }
+    }
+
+    // Format the cells as numbers and add a separator for the last two columns
+    const lastColumnIndex = headers.length - 1;
+    const secondLastColumnIndex = lastColumnIndex - 1;
+    const range = XLSX.utils.decode_range(ws['!ref']);
+    for (let r = range.s.r; r <= range.e.r; r++) {
+      for (let c = secondLastColumnIndex; c <= lastColumnIndex; c++) {
+        const cell = XLSX.utils.encode_cell({ r: r, c: c });
+        const cellValue = ws[cell] ? ws[cell].v : '';
+        if (!isNaN(cellValue)) {
+          ws[cell].t = 'n'; // Set cell type to number
+          ws[cell].z = '#,##0'; // Set number format with comma separator
         }
       }
     }
