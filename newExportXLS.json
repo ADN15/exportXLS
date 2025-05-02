@@ -1,0 +1,39 @@
+{
+    "eula": "",
+    "vendor": "SAP",
+    "license": "",
+    "id": "com.sap.new.version.export.xls",
+    "version": "1.0.0",
+    "name": "new Export XLS",
+    "newInstancePrefix": "newExportXLS",
+    "description": "A sample widget that allows users to export Locked XLS files.",
+    "imports": ["table", "input-controls", "planning", "datasource"],
+    "webcomponents": [
+        {
+            "kind": "main",
+            "tag": "com-sap-new-version-export-xls",
+            "url": "/newExportXLS.js",
+            "integrity": "",
+            "ignoreIntegrity": true
+        }
+    ],
+    "properties": {},
+    "methods": {
+        "exportData": {
+            "returnType": "any",
+            "description": "Exports the data to an Excel file and initiates the download.",
+            "parameters": [
+                {
+                    "name": "resultSet",
+                    "type": "string[]", 
+                    "description": "The data to be exported to the Excel file."
+                }
+            ]
+        }
+    },
+    "events": {
+        "onFileExport": {
+            "description": "Triggered when a file has been successfully exported."
+        }
+    }
+}
