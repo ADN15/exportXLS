@@ -102,8 +102,7 @@ var getScriptPromisify = (src) => {
 
             // Create the "Date" sheet data
             const wsDateData = [];
-            wsDateData.push(['Measures', 'Budget Allocation']);
-            wsDateData.push(['Date', '']);
+            wsDateData.push(['Date', 'Budget Allocation']);
             resultSet.forEach(item => {
                 const values = item.split(';');
                 const rowData = [
@@ -133,9 +132,7 @@ var getScriptPromisify = (src) => {
 
             // Create the "FundingPot" sheet data
             const wsFundingPotData = [];
-            wsFundingPotData.push(['', '', '', '', '','Measures','Total Supported']);
-            wsFundingPotData.push(['', '', '', '', '','Version','Estimated']);
-            wsFundingPotData.push(['Funding Pot', 'Allocated Access', 'Startin FY', 'Closeing FY', 'Description','Accounts','']);
+            wsFundingPotData.push(['Funding Pot', 'Allocated Access', 'Startin FY', 'Closeing FY', 'Description','Accounts']);
             resultSet2.forEach(item2 => {
                 const values2 = item2.split(';');
                 const rowData2 = [
@@ -144,8 +141,7 @@ var getScriptPromisify = (src) => {
                     values2[2], // Starting FY
                     values2[3], // Closing FY
                     values2[4], // Funding Pot Description
-                    '',         // Account
-                    ''          // Total Supported Extimated (empty for now)
+                    ''         // Account
                 ];
                 wsFundingPotData.push(rowData2);
             });
@@ -170,15 +166,13 @@ var getScriptPromisify = (src) => {
 
             // Create the "CostCenter" sheet data
             const wsCostCenterData = [];
-            wsCostCenterData.push(['', '', 'Measures','Count']);
-            wsCostCenterData.push(['Ministry View', 'Programme', 'Description','']);
+            wsCostCenterData.push(['Ministry View', 'Programme', 'Description']);
             resultSet3.forEach(item3 => {
                 const values3 = item3.split(';');
                 const rowData3 = [
                     values3[0], // Cost Centre ID
                     values3[1], // Programme
-                    values3[2], // Cost Centre Desc
-                    ''
+                    values3[2] // Cost Centre Desc
                 ];
                 wsCostCenterData.push(rowData3);
             });
@@ -238,7 +232,7 @@ var getScriptPromisify = (src) => {
             // Generate Excel file and trigger download
             const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
             const blob = new Blob([wbout], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
-            const filename = "Budget Drawdown Data.xlsx";
+            const filename = "Data_File.xlsx";
 
             const link = document.createElement("a");
             link.href = URL.createObjectURL(blob);
