@@ -49,7 +49,7 @@ var getScriptPromisify = (src) => {
         }
 
         // Method to export Excel data
-        exportData(resultSet = []) {
+        exportData(resultSet = [], resultSet2 = [], resultSet3 = []) {
             if (typeof XLSX === "undefined") {
                 console.error("XLSX library not loaded.");
                 return;
@@ -107,8 +107,8 @@ var getScriptPromisify = (src) => {
             resultSet.forEach(item => {
                 const values = item.split(';');
                 const rowData = [
-                    '', // Year
-                    ''  // Value
+                    values[0], // Year
+                    values[1]  // Value
                 ];
                 wsDateData.push(rowData);
             });
@@ -131,56 +131,23 @@ var getScriptPromisify = (src) => {
             // Add the "Date" worksheet to the workbook
             XLSX.utils.book_append_sheet(wb, wsDate, "Date");
 
-            // Create the "CostCenter" sheet data
-            const wsCostCenterData = [];
-            wsCostCenterData.push(['', '', 'Measures','Count']);
-            wsCostCenterData.push(['Ministry View', 'Programme', 'Description','']);
-            resultSet.forEach(item => {
-                const values = item.split(';');
-                const rowData = [
-                    values[1],  // Cost Centre Description
-                    values[0], // Cost Centre ID
-                    '',
-                    ''
-                ];
-                wsCostCenterData.push(rowData);
-            });
-
-            // Create the "CostCenter" worksheet
-            const wsCostCenter = XLSX.utils.aoa_to_sheet(wsCostCenterData);
-
-            wsCostCenter["!protect"] = {
-                password: "",  // Optional password (empty means no password)
-                sheet: true,   // Lock the sheet
-                formatCells: false,
-                formatColumns: false,
-                formatRows: false,
-                insertColumns: false,
-                insertRows: false,
-                deleteColumns: false,
-                deleteRows: false
-            };
-
-            // Add the "CostCenter" worksheet to the workbook
-            XLSX.utils.book_append_sheet(wb, wsCostCenter, "CostCenter");
-
             // Create the "FundingPot" sheet data
             const wsFundingPotData = [];
             wsFundingPotData.push(['', '', '', '', '','Measures','Total Supported']);
             wsFundingPotData.push(['', '', '', '', '','Version','Estimated']);
             wsFundingPotData.push(['Funding Pot', 'Allocated Access', 'Startin FY', 'Closeing FY', 'Description','Accounts','']);
-            resultSet.forEach(item => {
-                const values = item.split(';');
-                const rowData = [
-                    values[2], // Funding Pot ID
-                    '',        // Allocated Access
-                    values[3], // Starting FY
-                    values[4], // Closing FY
-                    values[5], // Funding Pot Description
-                    '',        // Account
-                    ''         // Total Supported Extimated (empty for now)
+            resultSet2.forEach(item2 => {
+                const values2 = item2.split(';');
+                const rowData2 = [
+                    values2[0], // Funding Pot ID
+                    values2[1], // Allocated Access
+                    values2[2], // Starting FY
+                    values2[3], // Closing FY
+                    values2[4], // Funding Pot Description
+                    '',         // Account
+                    ''          // Total Supported Extimated (empty for now)
                 ];
-                wsFundingPotData.push(rowData);
+                wsFundingPotData.push(rowData2);
             });
 
             // Create the "FundingPot" worksheet
@@ -200,6 +167,39 @@ var getScriptPromisify = (src) => {
 
             // Add the "FundingPot" worksheet to the workbook
             XLSX.utils.book_append_sheet(wb, wsFundingPot, "FundingPot");
+
+            // Create the "CostCenter" sheet data
+            const wsCostCenterData = [];
+            wsCostCenterData.push(['', '', 'Measures','Count']);
+            wsCostCenterData.push(['Ministry View', 'Programme', 'Description','']);
+            resultSet3.forEach(item3 => {
+                const values3 = item3.split(';');
+                const rowData3 = [
+                    values3[0], // Cost Centre ID
+                    values3[1], // Programme
+                    values3[2], // Cost Centre Desc
+                    ''
+                ];
+                wsCostCenterData.push(rowData3);
+            });
+
+            // Create the "CostCenter" worksheet
+            const wsCostCenter = XLSX.utils.aoa_to_sheet(wsCostCenterData);
+
+            wsCostCenter["!protect"] = {
+                password: "",  // Optional password (empty means no password)
+                sheet: true,   // Lock the sheet
+                formatCells: false,
+                formatColumns: false,
+                formatRows: false,
+                insertColumns: false,
+                insertRows: false,
+                deleteColumns: false,
+                deleteRows: false
+            };
+
+            // Add the "CostCenter" worksheet to the workbook
+            XLSX.utils.book_append_sheet(wb, wsCostCenter, "CostCenter");
 
             // Create the "Account" sheet data
             //const wsAccountData = [];

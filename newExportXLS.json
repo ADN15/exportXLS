@@ -26,7 +26,17 @@
                 {
                     "name": "resultSet",
                     "type": "string[]", 
-                    "description": "The data to be exported to the Excel file."
+                    "description": "The date data to be exported to the Excel file."
+                },
+                {
+                    "name": "resultSet2",
+                    "type": "string[]", 
+                    "description": "The funding pot data to be exported to the Excel file."
+                },
+                {
+                    "name": "resultSet3",
+                    "type": "string[]", 
+                    "description": "The cost center data to be exported to the Excel file."
                 }
             ]
         }
