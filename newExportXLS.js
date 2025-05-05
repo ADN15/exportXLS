@@ -132,7 +132,7 @@ var getScriptPromisify = (src) => {
 
             // Create the "FundingPot" sheet data
             const wsFundingPotData = [];
-            wsFundingPotData.push(['Funding Pot', 'Allocated Access', 'Startin FY', 'Closeing FY', 'Description','Accounts']);
+            wsFundingPotData.push(['Funding Pot', 'Allocated Access', 'Starting FY', 'Closing FY', 'Description','Accounts']);
             resultSet2.forEach(item2 => {
                 const values2 = item2.split(';');
                 const rowData2 = [
