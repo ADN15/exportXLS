@@ -99,14 +99,49 @@ var getScriptPromisify = (src) => {
             // Add the "Drawdown_Table" worksheet to the workbook
             //XLSX.utils.book_append_sheet(wb, wsDrawdown, "Drawdown_Table");
 
-            // Create the "CostCenter" sheet data
-            const wsCostCenterData = [];
-            wsCostCenterData.push(['ID', 'Desc']);
+
+            // Create the "Date" sheet data
+            const wsDateData = [];
+            wsDateData.push(['Measures', 'Budget Allocation']);
+            wsDateData.push(['Date', '']);
             resultSet.forEach(item => {
                 const values = item.split(';');
                 const rowData = [
+                    '', // Year
+                    ''  // Value
+                ];
+                wsDateData.push(rowData);
+            });
+
+            // Create the "Date" worksheet
+            const wsDate = XLSX.utils.aoa_to_sheet(wsDateData);
+
+            wsDate["!protect"] = {
+                password: "",  // Optional password (empty means no password)
+                sheet: true,   // Lock the sheet
+                formatCells: false,
+                formatColumns: false,
+                formatRows: false,
+                insertColumns: false,
+                insertRows: false,
+                deleteColumns: false,
+                deleteRows: false
+            };
+
+            // Add the "Date" worksheet to the workbook
+            XLSX.utils.book_append_sheet(wb, wsDate, "Date");
+
+            // Create the "CostCenter" sheet data
+            const wsCostCenterData = [];
+            wsCostCenterData.push(['', '', 'Measures','Count']);
+            wsCostCenterData.push(['Ministry View', 'Programme', 'Description','']);
+            resultSet.forEach(item => {
+                const values = item.split(';');
+                const rowData = [
+                    values[1],  // Cost Centre Description
                     values[0], // Cost Centre ID
-                    values[1]  // Cost Centre Description
+                    '',
+                    ''
                 ];
                 wsCostCenterData.push(rowData);
             });
@@ -131,15 +166,19 @@ var getScriptPromisify = (src) => {
 
             // Create the "FundingPot" sheet data
             const wsFundingPotData = [];
-            wsFundingPotData.push(['ID', 'Desc', 'StartFY', 'CloseFY', 'Allocated Access']);
+            wsFundingPotData.push(['', '', '', '', '','Measures','Total Supported']);
+            wsFundingPotData.push(['', '', '', '', '','Version','Estimated']);
+            wsFundingPotData.push(['Funding Pot', 'Allocated Access', 'Startin FY', 'Closeing FY', 'Description','Accounts','']);
             resultSet.forEach(item => {
                 const values = item.split(';');
                 const rowData = [
                     values[2], // Funding Pot ID
-                    values[5], // Funding Pot Description
+                    '',        // Allocated Access
                     values[3], // Starting FY
                     values[4], // Closing FY
-                    ''         // Allocated Access (empty for now)
+                    values[5], // Funding Pot Description
+                    '',        // Account
+                    ''         // Total Supported Extimated (empty for now)
                 ];
                 wsFundingPotData.push(rowData);
             });
@@ -164,11 +203,14 @@ var getScriptPromisify = (src) => {
 
             // Create the "Account" sheet data
             const wsAccountData = [];
-            wsAccountData.push(['ID', 'Desc', 'Old_New']);
+            wsAccountData.push(['', '', '','Measures','Count']);
+            wsAccountData.push(['Accounts', 'Old or New Account', 'Old Long Decsription','Description','']);
             resultSet.forEach(item => {
                 const values = item.split(';');
                 const rowData = [
-                    values[6], // Account ID
+                    values[6], // Account
+                    '',        // Old or New Account
+                    '',        // Old Long Descriotipn
                     values[7], // Account Description
                     ''         // Old_New (empty for now)
                 ];
