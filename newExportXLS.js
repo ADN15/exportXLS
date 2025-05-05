@@ -202,38 +202,38 @@ var getScriptPromisify = (src) => {
             XLSX.utils.book_append_sheet(wb, wsFundingPot, "FundingPot");
 
             // Create the "Account" sheet data
-            const wsAccountData = [];
-            wsAccountData.push(['', '', '','Measures','Count']);
-            wsAccountData.push(['Accounts', 'Old or New Account', 'Old Long Decsription','Description','']);
-            resultSet.forEach(item => {
-                const values = item.split(';');
-                const rowData = [
-                    values[6], // Account
-                    '',        // Old or New Account
-                    '',        // Old Long Descriotipn
-                    values[7], // Account Description
-                    ''         // Old_New (empty for now)
-                ];
-                wsAccountData.push(rowData);
-            });
+            //const wsAccountData = [];
+            //wsAccountData.push(['', '', '','Measures','Count']);
+            //wsAccountData.push(['Accounts', 'Old or New Account', 'Old Long Decsription','Description','']);
+            //resultSet.forEach(item => {
+            //    const values = item.split(';');
+            //    const rowData = [
+            //        values[6], // Account
+            //        '',        // Old or New Account
+            //        '',        // Old Long Descriotipn
+            //        values[7], // Account Description
+            //        ''         // Old_New (empty for now)
+            //    ];
+            //    wsAccountData.push(rowData);
+            //});
 
             // Create the "Account" worksheet
-            const wsAccount = XLSX.utils.aoa_to_sheet(wsAccountData);
+            //const wsAccount = XLSX.utils.aoa_to_sheet(wsAccountData);
 
-            wsAccount["!protect"] = {
-                password: "",  // Optional password (empty means no password)
-                sheet: true,   // Lock the sheet
-                formatCells: false,
-                formatColumns: false,
-                formatRows: false,
-                insertColumns: false,
-                insertRows: false,
-                deleteColumns: false,
-                deleteRows: false
-            };
+            //wsAccount["!protect"] = {
+            //    password: "",  // Optional password (empty means no password)
+            //    sheet: true,   // Lock the sheet
+            //    formatCells: false,
+            //    formatColumns: false,
+            //    formatRows: false,
+            //    insertColumns: false,
+            //   insertRows: false,
+            //    deleteColumns: false,
+            //    deleteRows: false
+            //};
 
             // Add the "Account" worksheet to the workbook
-            XLSX.utils.book_append_sheet(wb, wsAccount, "Account");
+            //XLSX.utils.book_append_sheet(wb, wsAccount, "Account");
 
             // Generate Excel file and trigger download
             const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
