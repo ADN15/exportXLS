@@ -132,15 +132,16 @@ var getScriptPromisify = (src) => {
 
             // Create the "FundingPot" sheet data
             const wsFundingPotData = [];
-            wsFundingPotData.push(['Funding Pot', 'Allocated Access', 'Starting FY', 'Closing FY', 'Description','Accounts']);
+            wsFundingPotData.push(['Funding Pot', 'Fund Type', 'Allocated Access', 'Starting FY', 'Closing FY', 'Description','Accounts']);
             resultSet2.forEach(item2 => {
                 const values2 = item2.split(';');
                 const rowData2 = [
                     values2[0], // Funding Pot ID
-                    values2[1], // Allocated Access
-                    values2[2], // Starting FY
-                    values2[3], // Closing FY
-                    values2[4], // Funding Pot Description
+                    values2[1], // FUnd Type
+                    values2[2], // Allocated Access
+                    values2[3], // Starting FY
+                    values2[4], // Closing FY
+                    values2[5], // Funding Pot Description
                     ''         // Account
                 ];
                 wsFundingPotData.push(rowData2);
@@ -166,13 +167,15 @@ var getScriptPromisify = (src) => {
 
             // Create the "CostCenter" sheet data
             const wsCostCenterData = [];
-            wsCostCenterData.push(['Ministry View', 'Programme', 'Description']);
+            wsCostCenterData.push(['Ministry View', 'Project Type', 'New Projects', 'Programme', 'Description']);
             resultSet3.forEach(item3 => {
                 const values3 = item3.split(';');
                 const rowData3 = [
                     values3[0], // Cost Centre ID
-                    values3[1], // Programme
-                    values3[2] // Cost Centre Desc
+                    values3[1], // Project Type
+                    values3[2], // new Projects
+                    values3[3], // Programme
+                    values3[4]  // Cost Centre Desc
                 ];
                 wsCostCenterData.push(rowData3);
             });
@@ -228,6 +231,21 @@ var getScriptPromisify = (src) => {
 
             // Add the "Account" worksheet to the workbook
             //XLSX.utils.book_append_sheet(wb, wsAccount, "Account");
+
+            // Create hidden "Validation" worksheet
+            const wsValidationData = [['iBudget3DataFile']];
+            const wsValidation = XLSX.utils.aoa_to_sheet(wsValidationData);
+            XLSX.utils.book_append_sheet(wb, wsValidation, "Validation");
+
+            // Set visibility: 0 = visible, 1 = hidden, 2 = very hidden
+            wb.Workbook = {
+                Sheets: [
+                    { Hidden: 0 }, // Date
+                    { Hidden: 0 }, // FundingPot
+                    { Hidden: 0 }, // CostCenter
+                    { Hidden: 1 }  // Validation (hidden)
+                ]
+            };
 
             // Generate Excel file and trigger download
             const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
