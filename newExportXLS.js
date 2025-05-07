@@ -260,7 +260,7 @@ var getScriptPromisify = (src) => {
                     { Hidden: 0 }, // Date
                     { Hidden: 0 }, // FundingPot
                     { Hidden: 0 }, // CostCenter
-                    { Hidden: 1 }  // Validation (hidden)
+                    { Hidden: 2 }  // Validation (hidden)
                 ]
             };
 
