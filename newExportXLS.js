@@ -235,8 +235,16 @@ var getScriptPromisify = (src) => {
             // Create hidden "Validation" worksheet
             const wsValidationData = [['iBudget3DataFile']];
             const wsValidation = XLSX.utils.aoa_to_sheet(wsValidationData);
-            XLSX.utils.book_append_sheet(wb, wsValidation, "Validation");
+            
+             // Hide column A
+            wsValidation['!cols'] = [{ wch: 0 }];  // column width set to 0
 
+            // Protect the Validation sheet
+            this.protectSheet(wsValidation);
+
+            // Append sheet
+            XLSX.utils.book_append_sheet(wb, wsValidation, "Validation");
+            
             // Set visibility: 0 = visible, 1 = hidden, 2 = very hidden
             wb.Workbook = {
                 Sheets: [
