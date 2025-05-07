@@ -239,8 +239,17 @@ var getScriptPromisify = (src) => {
              // Hide column A
             wsValidation['!cols'] = [{ wch: 0 }];  // column width set to 0
 
-            // Protect the Validation sheet
-            this.protectSheet(wsValidation);
+            wsValidation["!protect"] = {
+                password: "",  // Optional password (empty means no password)
+                sheet: true,   // Lock the sheet
+                formatCells: false,
+                formatColumns: false,
+                formatRows: false,
+                insertColumns: false,
+                insertRows: false,
+                deleteColumns: false,
+                deleteRows: false
+            };
 
             // Append sheet
             XLSX.utils.book_append_sheet(wb, wsValidation, "Validation");
