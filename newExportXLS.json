@@ -37,6 +37,11 @@
                     "name": "resultSet3",
                     "type": "string[]", 
                     "description": "The cost center data to be exported to the Excel file."
+                },
+                {
+                    "name": "resultSet4",
+                    "type": "string[]", 
+                    "description": "The account data to be exported to the Excel file."
                 }
             ]
         }
